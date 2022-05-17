@@ -1,0 +1,73 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.5">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.5" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration" Version="6.0.4" />
+      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.4" />
+      <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
+      <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Rating\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Rating\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Rating\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Rating\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Rating\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\RatingContoller\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\RatingContoller\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\RatingContoller\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\RatingContoller\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Developer\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Developer\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Developer\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Developer\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Developer\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Game\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Game\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Game\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Game\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Game\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Publisher\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Publisher\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Publisher\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Publisher\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Publisher\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\LibraryMedia\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\LibraryMedia\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\LibraryMedia\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\LibraryMedia\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\LibraryMedia\Index.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Views\Developer\Create.cshtml" />
+      <UpToDateCheckInput Remove="Views\Developer\Delete.cshtml" />
+      <UpToDateCheckInput Remove="Views\Developer\Details.cshtml" />
+      <UpToDateCheckInput Remove="Views\Developer\Edit.cshtml" />
+      <UpToDateCheckInput Remove="Views\Developer\Index.cshtml" />
+      <UpToDateCheckInput Remove="Views\Rating\Create.cshtml" />
+      <UpToDateCheckInput Remove="Views\Rating\Delete.cshtml" />
+      <UpToDateCheckInput Remove="Views\Rating\Details.cshtml" />
+      <UpToDateCheckInput Remove="Views\Rating\Edit.cshtml" />
+      <UpToDateCheckInput Remove="Views\Rating\Index.cshtml" />
+    </ItemGroup>
+
+</Project>
