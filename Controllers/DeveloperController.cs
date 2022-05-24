@@ -47,7 +47,6 @@ namespace GameLibWeb.Controllers
         // GET: Developer/Create
         public IActionResult Create()
         {
-            ViewData["LibraryMediaId"] = new SelectList(_context.Librarymedia, "Id", "Id");
             return View();
         }
 
@@ -56,15 +55,17 @@ namespace GameLibWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Info,LibraryMediaId")] Developer developer)
+        public async Task<IActionResult> Create(IFormFile image,string imageString,[Bind("Id,Name,Info")] Developer developer)
         {
+            imageString = Librarymedium.ToBase64(image);
+            return RedirectToAction("Create", "LibraryMedia", new {image = imageString});
+            //developer.LibraryMediaId = libraryMediaId;
             if (ModelState.IsValid)
             {
                 _context.Add(developer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LibraryMediaId"] = new SelectList(_context.Librarymedia, "Id", "Id", developer.LibraryMediaId);
             return View(developer);
         }
 

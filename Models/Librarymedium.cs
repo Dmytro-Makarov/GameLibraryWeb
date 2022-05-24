@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Drawing;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GameLibWeb
 {
     public partial class Librarymedium
     {
         public uint Id { get; set; }
+        [Display(Name = "Image")]
         public string? Media { get; set; }
         public static Image LoadBase64(string base64)
         {
@@ -19,11 +21,11 @@ namespace GameLibWeb
             return image;
         }
 
-        public static string ToBase64(Image image)
+        public static string ToBase64(IFormFile image)
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                image.Save(ms, image.RawFormat);
+                image.CopyTo(ms);
                 byte[] imageBytes = ms.ToArray();
 
                 string base64String = Convert.ToBase64String(imageBytes);

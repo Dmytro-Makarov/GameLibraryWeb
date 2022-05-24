@@ -46,10 +46,10 @@ namespace GameLibWeb.Controllers
         }
 
         // GET: LibraryMedia/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        //public IActionResult Create()
+        //{
+        //    return View();
+        //}
 
         // POST: LibraryMedia/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -65,6 +65,17 @@ namespace GameLibWeb.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(librarymedium);
+        }
+        
+        public async Task<IActionResult> Create(string image, [Bind("Id")] Librarymedium librarymedium)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(librarymedium);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction("Index");
         }
 
         // GET: LibraryMedia/Edit/5

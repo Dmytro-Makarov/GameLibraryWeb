@@ -47,7 +47,6 @@ namespace GameLibWeb.Controllers
         // GET: Publisher/Create
         public IActionResult Create()
         {
-            ViewData["LibraryMediaId"] = new SelectList(_context.Librarymedia, "Id", "Id");
             return View();
         }
 
@@ -58,13 +57,13 @@ namespace GameLibWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Info,LibraryMediaId")] Publisher publisher)
         {
+            
             if (ModelState.IsValid)
             {
                 _context.Add(publisher);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LibraryMediaId"] = new SelectList(_context.Librarymedia, "Id", "Id", publisher.LibraryMediaId);
             return View(publisher);
         }
 

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "d/5nzLXLlwwZS7l4hnujSDEsOMfr5/PuTeSG9eTyT7WyvScSHOmLHLW/JV9fdybX3Ttko4k6tHVG3IJdv+YS5Q==",
+  "dgSpecHash": "GSFDtvLf1jLs5SIr37KVp+K2SzojQpV7PlUB3tY1ZjYenu4s+QhS/3NvUII8G+wRD0IOglccgSMvN9oZkJSynA==",
   "success": true,
   "projectFilePath": "D:\\JB\\Rider\\GameLibWeb\\GameLibWeb.csproj",
   "expectedPackageFiles": [
@@ -140,6 +140,7 @@
     "C:\\Users\\Дмитро\\.nuget\\packages\\system.io.compression.zipfile\\4.3.0\\system.io.compression.zipfile.4.3.0.nupkg.sha512",
     "C:\\Users\\Дмитро\\.nuget\\packages\\system.io.filesystem\\4.3.0\\system.io.filesystem.4.3.0.nupkg.sha512",
     "C:\\Users\\Дмитро\\.nuget\\packages\\system.io.filesystem.primitives\\4.3.0\\system.io.filesystem.primitives.4.3.0.nupkg.sha512",
+    "C:\\Users\\Дмитро\\.nuget\\packages\\system.io.packaging\\6.0.0\\system.io.packaging.6.0.0.nupkg.sha512",
     "C:\\Users\\Дмитро\\.nuget\\packages\\system.io.pipelines\\5.0.1\\system.io.pipelines.5.0.1.nupkg.sha512",
     "C:\\Users\\Дмитро\\.nuget\\packages\\system.linq\\4.3.0\\system.linq.4.3.0.nupkg.sha512",
     "C:\\Users\\Дмитро\\.nuget\\packages\\system.linq.expressions\\4.3.0\\system.linq.expressions.4.3.0.nupkg.sha512",

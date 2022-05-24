@@ -1,3 +1,6 @@
+@using System.Collections
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.EntityFrameworkCore
 @model GameLibWeb.Game
 
 @{
@@ -23,20 +26,23 @@
                 <span asp-validation-for="Info" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PublisherId" class="control-label"></label>
-                <select asp-for="PublisherId" class ="form-control" asp-items="ViewBag.PublisherId"></select>
+                <label asp-for="Publisher.Name" class="control-label"></label>
+                <select asp-for="Publisher.Name" class ="form-control" asp-items="ViewBag.Name"></select>
             </div>
             <div class="form-group">
-                <label asp-for="DeveloperId" class="control-label"></label>
-                <select asp-for="DeveloperId" class ="form-control" asp-items="ViewBag.DeveloperId"></select>
+                <label asp-for="Developer.Name" class="control-label"></label>
+                <select asp-for="Developer.Name" class ="form-control" asp-items="ViewBag.Name"></select>
             </div>
             <div class="form-group">
-                <label asp-for="RatingId" class="control-label"></label>
-                <select asp-for="RatingId" class ="form-control" asp-items="ViewBag.RatingId"></select>
+                <label asp-for="Rating.Age" class="control-label"></label>
+                <input asp-for="Rating.Age" class="form-control" />
+                <span asp-validation-for="Rating.Age" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LibraryMediaId" class="control-label"></label>
-                <select asp-for="LibraryMediaId" class ="form-control" asp-items="ViewBag.LibraryMediaId"></select>
+                <label asp-for="LibraryMedia.Media" class="control-label"></label>
+                <div class="custom-file">
+                    <input asp-for="LibraryMedia.Media" type="file" name="Image" id="customFile" accept="image/*">
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

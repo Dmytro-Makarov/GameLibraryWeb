@@ -50,10 +50,11 @@ namespace GameLibWeb.Controllers
         // GET: Game/Create
         public IActionResult Create()
         {
-            ViewData["DeveloperId"] = new SelectList(_context.Developers, "Id", "Id");
-            ViewData["LibraryMediaId"] = new SelectList(_context.Librarymedia, "Id", "Id");
-            ViewData["PublisherId"] = new SelectList(_context.Publishers, "Id", "Id");
-            ViewData["RatingId"] = new SelectList(_context.Ratings, "Id", "Id");
+            ViewData["Developer.Name"] = new SelectList(_context.Developers, "Name", "DeveloperName");
+            //Sends request to get ids for a list
+            //ViewData["LibraryMedia.Id"] = new SelectList(_context.Librarymedia, "Id", "Id");
+            ViewData["Publisher.Name"] = new SelectList(_context.Publishers, "Name", "PublisherName");
+            ViewData["Rating.Age"] = new SelectList(_context.Ratings, "Age", "RatingAge");
             return View();
         }
 
@@ -64,16 +65,18 @@ namespace GameLibWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Info,PublisherId,DeveloperId,RatingId,LibraryMediaId")] Game game)
         {
+            //ViewData["LibraryMedia.Media"]
             if (ModelState.IsValid)
             {
                 _context.Add(game);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DeveloperId"] = new SelectList(_context.Developers, "Id", "Id", game.DeveloperId);
-            ViewData["LibraryMediaId"] = new SelectList(_context.Librarymedia, "Id", "Id", game.LibraryMediaId);
-            ViewData["PublisherId"] = new SelectList(_context.Publishers, "Id", "Id", game.PublisherId);
-            ViewData["RatingId"] = new SelectList(_context.Ratings, "Id", "Id", game.RatingId);
+            ViewData["Developer.Name"] = new SelectList(_context.Developers, "Name", "DeveloperName");
+            //Sends request to get ids for a list
+            //ViewData["LibraryMedia.Id"] = new SelectList(_context.Librarymedia, "Id", "Id");
+            ViewData["Publisher.Name"] = new SelectList(_context.Publishers, "Name", "PublisherName");
+            ViewData["Rating.Age"] = new SelectList(_context.Ratings, "Age", "RatingAge");
             return View(game);
         }
 
