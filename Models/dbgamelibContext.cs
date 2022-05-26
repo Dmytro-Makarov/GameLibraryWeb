@@ -43,8 +43,6 @@ namespace GameLibWeb
 
                 entity.Property(e => e.Info).HasColumnType("text");
 
-                entity.Property(e => e.Media).HasColumnType("text");
-
                 entity.Property(e => e.Name).HasMaxLength(50);
             });
 
@@ -63,8 +61,6 @@ namespace GameLibWeb
 
                 entity.Property(e => e.Info).HasColumnType("text");
 
-                entity.Property(e => e.Media).HasColumnType("text");
-
                 entity.Property(e => e.Name).HasMaxLength(50);
 
                 entity.HasOne(d => d.Developer)
@@ -80,7 +76,6 @@ namespace GameLibWeb
                 entity.HasOne(d => d.Rating)
                     .WithOne(p => p.Game)
                     .HasForeignKey<Game>(d => d.RatingId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("RatingId_id");
             });
 
@@ -95,13 +90,11 @@ namespace GameLibWeb
                 entity.HasOne(d => d.Game)
                     .WithMany(p => p.Gamegenrerelations)
                     .HasForeignKey(d => d.GameId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("GameId_G_id");
-            
+
                 entity.HasOne(d => d.Genre)
                     .WithMany(p => p.Gamegenrerelations)
                     .HasForeignKey(d => d.GenreId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("GenreId_id");
             });
 
@@ -117,8 +110,6 @@ namespace GameLibWeb
                 entity.ToTable("publishers");
 
                 entity.Property(e => e.Info).HasColumnType("text");
-
-                entity.Property(e => e.Media).HasColumnType("text");
 
                 entity.Property(e => e.Name).HasMaxLength(50);
             });
