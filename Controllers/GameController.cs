@@ -81,6 +81,7 @@ namespace GameLibWeb.Controllers
             var gamePublisher = _context.Publishers.First(p=> p.Id == game.PublisherId);
             game.Publisher = gamePublisher;
 
+            /*
             if (!_context.Gamegenrerelations.Any(ggr => ggr.GameId.Equals(game.Id)))
             {
                 relation.GameId = game.Id;
@@ -91,7 +92,7 @@ namespace GameLibWeb.Controllers
                 _context.Add(relation);
                 await _context.SaveChangesAsync();
             }
-            
+            */
             //Check if there isn't a rating object with this age
             //if there isn't, add one
             if (!_context.Ratings.Any(r => rating.Age.Equals(r.Age)))

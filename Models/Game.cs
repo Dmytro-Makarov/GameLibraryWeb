@@ -21,13 +21,13 @@ namespace GameLibWeb
         [Display(Name = "Developer Name")]
         public uint? DeveloperId { get; set; }
         [Display(Name = "Rating")]
-        public uint RatingId { get; set; }
+        public uint? RatingId { get; set; }
         [Display(Name = "Cover Art")]
         public string? Media { get; set; }
 
         public virtual Developer? Developer { get; set; }
         public virtual Publisher? Publisher { get; set; }
-        public virtual Rating Rating { get; set; } = null!;
+        public virtual Rating? Rating { get; set; }
         public virtual ICollection<Gamegenrerelation> Gamegenrerelations { get; set; }
     }
 }
