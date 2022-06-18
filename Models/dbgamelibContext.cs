@@ -50,32 +50,29 @@ namespace GameLibWeb
             {
                 entity.ToTable("games");
 
-                entity.HasIndex(e => e.DeveloperId, "developerId_id_idx")
-                    .IsUnique();
+                entity.HasIndex(e => e.DeveloperId, "developerId_id_idx");
 
-                entity.HasIndex(e => e.PublisherId, "publisherId_idx")
-                    .IsUnique();
+                entity.HasIndex(e => e.PublisherId, "publisherId_idx");
 
-                entity.HasIndex(e => e.RatingId, "ratingId_id_idx")
-                    .IsUnique();
+                entity.HasIndex(e => e.RatingId, "ratingId_id_idx");
 
                 entity.Property(e => e.Info).HasColumnType("text");
 
                 entity.Property(e => e.Name).HasMaxLength(50);
 
                 entity.HasOne(d => d.Developer)
-                    .WithOne(p => p.Game)
-                    .HasForeignKey<Game>(d => d.DeveloperId)
+                    .WithMany(p => p.Games)
+                    .HasForeignKey(d => d.DeveloperId)
                     .HasConstraintName("DeveloperId_id");
 
                 entity.HasOne(d => d.Publisher)
-                    .WithOne(p => p.Game)
-                    .HasForeignKey<Game>(d => d.PublisherId)
+                    .WithMany(p => p.Games)
+                    .HasForeignKey(d => d.PublisherId)
                     .HasConstraintName("PublisherId_id");
 
                 entity.HasOne(d => d.Rating)
-                    .WithOne(p => p.Game)
-                    .HasForeignKey<Game>(d => d.RatingId)
+                    .WithMany(p => p.Games)
+                    .HasForeignKey(d => d.RatingId)
                     .HasConstraintName("RatingId_id");
             });
 
