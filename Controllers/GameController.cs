@@ -52,9 +52,11 @@ namespace GameLibWeb.Controllers
         { 
             SelectList developerSelectList = new SelectList(_context.Developers, "Id", "Name");
             SelectList publisherSelectList = new SelectList(_context.Publishers, "Id", "Name");
-            SelectList ratingSelectList = new SelectList(_context.Ratings, "Age", "RatingAge");
+            SelectList genreSelectList = new SelectList(_context.Genres, "Id", "Name");
+            //SelectList ratingSelectList = new SelectList(_context.Ratings, "Age", "RatingAge");
             ViewBag.DeveloperName = developerSelectList;
             ViewBag.PublisherName = publisherSelectList;
+            ViewBag.GenreName = genreSelectList;
             return View();
         }
 
@@ -63,7 +65,8 @@ namespace GameLibWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(IFormFile image, 
+        public async Task<IActionResult> Create(IFormFile image,
+            int[] selectedGenres, 
             [Bind("Id, GameId, GenreId")]Gamegenrerelation relation,
             [Bind("Name")]Developer developer, 
             [Bind("Name")]Publisher publisher,
@@ -80,19 +83,7 @@ namespace GameLibWeb.Controllers
             game.Developer = gameDeveloper;
             var gamePublisher = _context.Publishers.First(p=> p.Id == game.PublisherId);
             game.Publisher = gamePublisher;
-
-            /*
-            if (!_context.Gamegenrerelations.Any(ggr => ggr.GameId.Equals(game.Id)))
-            {
-                relation.GameId = game.Id;
-                relation.GenreId = 1;
-                
-                relation.Game = game;
-                relation.Genre = _context.Genres.First(gen => gen.Id == relation.GenreId);
-                _context.Add(relation);
-                await _context.SaveChangesAsync();
-            }
-            */
+            
             //Check if there isn't a rating object with this age
             //if there isn't, add one
             if (!_context.Ratings.Any(r => rating.Age.Equals(r.Age)))
@@ -108,10 +99,38 @@ namespace GameLibWeb.Controllers
                 game.RatingId = ratingId;
             }
             //TODO: I guess this shithead lacks genres, simultaneously create and add genre relation
+            //Process:
+            //1. Add game
+            //2. For each chosen genre create a relation
+            //3. Add to ICollection
+            //4. Update the DB?
             if (ModelState.IsValid)
             {
                 _context.Add(game);
                 await _context.SaveChangesAsync();
+                
+                // I guess make genre relations after adding the game
+                if (!_context.Gamegenrerelations.Any(ggr => ggr.GameId.Equals(game.Id)))
+                {
+                    //Unique relation id offset
+                    int n = 0;
+                    foreach (var genreId in selectedGenres)
+                    {
+                        relation.Id = relation.Id + (uint) n;
+                        relation.GameId = game.Id;
+                        relation.GenreId = (uint?) genreId;
+                        relation.Game = game;
+                        relation.Genre = _context.Genres.First(gen => gen.Id == relation.GenreId);
+                        _context.Add(relation);
+                        await _context.SaveChangesAsync();
+                        game.Gamegenrerelations.Add(relation);
+                        _context.Update(game);
+                        await _context.SaveChangesAsync();
+                        n++;
+                    }
+
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             SelectList developerSelectList = new SelectList(_context.Developers, "Id", "Name");

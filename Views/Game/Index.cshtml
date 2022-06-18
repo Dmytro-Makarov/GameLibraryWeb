@@ -28,6 +28,9 @@
             @Html.DisplayNameFor(model => model.Publisher)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.Gamegenrerelations)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.Rating)
         </th>
         <th></th>
@@ -54,6 +57,9 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Publisher.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Gamegenrerelations)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Rating.Age)

@@ -9,6 +9,6 @@ namespace GameLibWeb
         public uint Id { get; set; }
         public uint Age { get; set; }
 
-        public virtual Game? Game { get; set; }
+        public virtual IEnumerable<Game?> Games { get; set; }
     }
 }
