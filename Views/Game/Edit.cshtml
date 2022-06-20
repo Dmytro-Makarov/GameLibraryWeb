@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -24,24 +24,43 @@
                 <span asp-validation-for="Info" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PublisherId" class="control-label"></label>
-                <select asp-for="PublisherId" class="form-control" asp-items="ViewBag.PublisherId"></select>
-                <span asp-validation-for="PublisherId" class="text-danger"></span>
+                <label asp-for="Publisher.Name" class="control-label"></label>
+                <select asp-for="Publisher.Id" class ="form-control" asp-items="ViewBag.PublisherName"></select>
             </div>
             <div class="form-group">
-                <label asp-for="DeveloperId" class="control-label"></label>
-                <select asp-for="DeveloperId" class="form-control" asp-items="ViewBag.DeveloperId"></select>
-                <span asp-validation-for="DeveloperId" class="text-danger"></span>
+                <label asp-for="Developer.Name" class="control-label"></label>
+                <select asp-for="Developer.Id" class ="form-control"  asp-items="ViewBag.DeveloperName"></select>
             </div>
             <div class="form-group">
-                <label asp-for="RatingId" class="control-label"></label>
-                <select asp-for="RatingId" class="form-control" asp-items="ViewBag.RatingId"></select>
-                <span asp-validation-for="RatingId" class="text-danger"></span>
+                <label asp-for="Rating.Age" class="control-label"></label>
+                <input asp-for="Rating.Age" class="form-control" />
+                <span asp-validation-for="Rating.Age" class="text-danger"></span>
+            </div>
+            <div class="form-group" id="genrenamelist" style="height: 110px; overflow: auto; border: solid; width: 150px;">
+                <label class="control-label">Genre</label>
+                @foreach (var names in ViewBag.GenreName)
+                {
+                    //probably do not need id's since i don't use jquery
+                    var checkBoxId = "chk" + names.Value;
+                    var tdId = "td" + names.Value;
+                    
+                    <table width="100%">
+                        <tr>
+                            <td width="20px">
+                                <input type="checkbox" id="@checkBoxId" name="selectedGenres" class="form-check" value="@names.Value" />
+                            </td>
+                            <td id="@tdId" width="100px">
+                                @names.Text
+                            </td>
+                        </tr>
+                    </table>
+                }
             </div>
             <div class="form-group">
-                <label asp-for="Media" class="control-label"></label>
-                <input asp-for="Media" class="form-control" />
-                <span asp-validation-for="Media" class="text-danger"></span>
+                <label asp-for="Media" class="control-label">Image</label>
+                <div class="custom-file">
+                    <input asp-for="Media" type="file" name="image" id="image" accept="image/*"/>
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

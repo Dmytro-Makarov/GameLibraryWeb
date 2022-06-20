@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace GameLibWeb
@@ -8,7 +9,6 @@ namespace GameLibWeb
     {
         public uint Id { get; set; }
         public uint Age { get; set; }
-
-        public virtual IEnumerable<Game?> Games { get; set; }
+        public virtual IEnumerable<Game?>? Games { get; set; }
     }
 }

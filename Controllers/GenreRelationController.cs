@@ -158,6 +158,16 @@ namespace GameLibWeb.Controllers
             var gamegenrerelation = await _context.Gamegenrerelations.FindAsync(id);
             if (gamegenrerelation != null)
             {
+                // because game's index is gamegenrerelations based, if the game doesn't have any relations
+                // then it is hidden, but not deleted
+                
+                // if the relation's game doesn't have any more relations
+                if (_context.Gamegenrerelations.Where(ggr => ggr.GameId == gamegenrerelation.GameId).Count() <= 1)
+                {
+                    //delete it and any other hidden game with no relations
+                     _context.RemoveRange(_context.Games.Where(g => g.Id == gamegenrerelation.GameId)
+                         .Union(_context.Games.Where(g => g.Gamegenrerelations.Count == 0)));
+                }
                 _context.Gamegenrerelations.Remove(gamegenrerelation);
             }
             

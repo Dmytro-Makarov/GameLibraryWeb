@@ -29,6 +29,6 @@ namespace GameLibWeb
         public virtual Publisher? Publisher { get; set; }
         public virtual Rating? Rating { get; set; }
         [Display(Name = "Genres")]
-        public virtual ICollection<Gamegenrerelation> Gamegenrerelations { get; set; }
+        public virtual ICollection<Gamegenrerelation?> Gamegenrerelations { get; set; }
     }
 }

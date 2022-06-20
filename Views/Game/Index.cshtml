@@ -1,5 +1,4 @@
-@model IEnumerable<GameLibWeb.Game>
-
+@model IEnumerable<GameLibWeb.Gamegenrerelation>
 @{
     ViewData["Title"] = "Index";
 }
@@ -13,63 +12,80 @@
     <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Media)
+            @Html.DisplayNameFor(model => model.Game.Media)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.Game.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Info)
+            @Html.DisplayNameFor(model => model.Game.Info)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Developer)
+            @Html.DisplayNameFor(model => model.Game.Developer)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Publisher)
+            @Html.DisplayNameFor(model => model.Game.Publisher)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Gamegenrerelations)
+            @Html.DisplayNameFor(model => model.Game.Gamegenrerelations)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Rating)
+            @Html.DisplayNameFor(model => model.Game.Rating)
         </th>
         <th></th>
     </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @{
-                string icon = string.Format("data:image/png;base64,{0}", item.Media);
-                ViewBag.ImageData = icon;
+    @{
+        var shownGames = new List<uint?>();
+        @foreach (var item in Model)
+        {
+            if (!shownGames.Contains(item.GameId))
+            {
+                <tr>
+                    <td>
+                        @{
+                            string icon = string.Format("data:image/png;base64,{0}", item.Game.Media);
+                            ViewBag.ImageData = icon;
+                        }
+                        <img src="@icon" width="150" height="150"/>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Game.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Game.Info)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Game.Developer.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Game.Publisher.Name)
+                    </td>
+                    <td>
+                        @{
+                            string genres = "";
+                            //try building from ground up
+                            foreach (var relation in item.Game.Gamegenrerelations)
+                            {
+                                genres = genres + relation?.Genre?.Name + "; ";
+                            }
+                        }
+                        @genres
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Game.Rating.Age)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Game.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Game.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Game.Id">Delete</a>
+                    </td>
+                </tr>
+                uint? gameid = item.GameId;
+                shownGames.Add(gameid);
             }
-            <img src="@icon" width="150" height="150"/>
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Info)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Developer.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Publisher.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Gamegenrerelations)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Rating.Age)
-        </td>
-        <td>
-            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-        </td>
-    </tr>
-}
+        }
+    }
     </tbody>
 </table>

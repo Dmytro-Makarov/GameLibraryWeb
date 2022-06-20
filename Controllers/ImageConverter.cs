@@ -15,7 +15,7 @@ public static class ImageConverter
         return image;
     }
 
-    public static string ToBase64(IFormFile image)
+    public static string ToBase64(IFormFile? image)
     {
         using MemoryStream ms = new MemoryStream();
         image.CopyTo(ms);
@@ -23,5 +23,10 @@ public static class ImageConverter
 
         string base64String = Convert.ToBase64String(imageBytes);
         return base64String;
+    }
+
+    public static string ToBase64(string imagePath)
+    {
+        return Convert.ToBase64String(File.ReadAllBytes(imagePath));
     }
 }

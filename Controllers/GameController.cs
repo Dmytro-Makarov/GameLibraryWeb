@@ -22,7 +22,14 @@ namespace GameLibWeb.Controllers
         // GET: Game
         public async Task<IActionResult> Index()
         {
-            var dbgamelibContext = _context.Games.Include(g => g.Developer).Include(g => g.Publisher).Include(g => g.Rating);
+            //Made Index based on GameGenreRelations to get access to Genres
+            var dbgamelibContext = _context.Gamegenrerelations.
+                Include(ggr => ggr.Game).
+                Include(ggr => ggr.Genre).
+                Include(ggr => ggr.Game!.Developer).
+                Include(ggr=>ggr.Game!.Publisher).
+                Include(ggr=>ggr.Game!.Publisher);
+                
             return View(await dbgamelibContext.ToListAsync());
         }
 
@@ -53,10 +60,11 @@ namespace GameLibWeb.Controllers
             SelectList developerSelectList = new SelectList(_context.Developers, "Id", "Name");
             SelectList publisherSelectList = new SelectList(_context.Publishers, "Id", "Name");
             SelectList genreSelectList = new SelectList(_context.Genres, "Id", "Name");
-            //SelectList ratingSelectList = new SelectList(_context.Ratings, "Age", "RatingAge");
+            
             ViewBag.DeveloperName = developerSelectList;
             ViewBag.PublisherName = publisherSelectList;
             ViewBag.GenreName = genreSelectList;
+            
             return View();
         }
 
@@ -65,79 +73,92 @@ namespace GameLibWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(IFormFile image,
-            int[] selectedGenres, 
+        public async Task<IActionResult> Create(IFormFile? image, int[] selectedGenres, 
             [Bind("Id, GameId, GenreId")]Gamegenrerelation relation,
-            [Bind("Name")]Developer developer, 
-            [Bind("Name")]Publisher publisher,
-            [Bind("Id,Age")]Rating rating,
+            [Bind("Id")]Developer developer, 
+            [Bind("Id")]Publisher publisher,
+            [Bind("Id,Age")]Rating? rating,
             [Bind("Id,Name,Info,PublisherId,DeveloperId,Media")] Game game)
         {
             //Convert image to Base64
-            game.Media = ImageConverter.ToBase64(image);
-            //idk why the foreign key is in name don't mention it
-            game.DeveloperId = uint.Parse(developer.Name);
-            game.PublisherId = uint.Parse(publisher.Name);
+            if (image != null)
+            {
+                game.Media = ImageConverter.ToBase64(image);
+            }
+            else
+            {
+                game.Media = ImageConverter.ToBase64("wwwroot/images/default.jpg");
+            }
+            
+            game.DeveloperId = developer.Id;
+            game.PublisherId = publisher.Id;
 
             var gameDeveloper = _context.Developers.First(d=> d.Id == game.DeveloperId);
-            game.Developer = gameDeveloper;
             var gamePublisher = _context.Publishers.First(p=> p.Id == game.PublisherId);
+            game.Developer = gameDeveloper;
             game.Publisher = gamePublisher;
             
             //Check if there isn't a rating object with this age
             //if there isn't, add one
-            if (!_context.Ratings.Any(r => rating.Age.Equals(r.Age)))
+            //TODO: Rating requires to add a game relation
+            if (!_context.Ratings.Any(r => rating!.Age.Equals(r.Age)))
             {
                 _context.Add(rating);
                 await _context.SaveChangesAsync();
                 game.RatingId = rating.Id;
+                game.Rating = rating;
             }
             //if there is, find it
             else
             {
-                var ratingId = _context.Ratings.First(r=> r.Age == rating.Age).Id;
-                game.RatingId = ratingId;
+                var foundRating = _context.Ratings.First(r=> r.Age == rating!.Age);
+                game.RatingId = foundRating.Id;
+                game.Rating = foundRating;
             }
-            //TODO: I guess this shithead lacks genres, simultaneously create and add genre relation
-            //Process:
-            //1. Add game
-            //2. For each chosen genre create a relation
-            //3. Add to ICollection
-            //4. Update the DB?
+
+            if (!_context.Gamegenrerelations.Any(ggr => ggr.GameId.Equals(game.Id)))
+            {
+                foreach (var genreId in selectedGenres)
+                {
+                    //going on a while loop to avoid duplicates
+                    while (_context.Gamegenrerelations.Any(ggr => ggr.Id.Equals(relation.Id)))
+                    {
+                        relation.Id++;
+                    }
+
+                    relation.GameId = game.Id;
+                    relation.Game = game;
+                    
+                    relation.GenreId = (uint?) genreId;
+                    relation.Genre = _context.Genres.First(gen => gen.Id == relation.GenreId);
+                    
+                    _context.Add(relation);
+                    await _context.SaveChangesAsync();
+                    game.Gamegenrerelations?.Add(relation);
+                }
+            }
+
+            //If we somehow added it to DB via relations
+            if (_context.Games.Any(g => g.Id == game.Id))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            
             if (ModelState.IsValid)
             {
                 _context.Add(game);
                 await _context.SaveChangesAsync();
-                
-                // I guess make genre relations after adding the game
-                if (!_context.Gamegenrerelations.Any(ggr => ggr.GameId.Equals(game.Id)))
-                {
-                    //Unique relation id offset
-                    int n = 0;
-                    foreach (var genreId in selectedGenres)
-                    {
-                        relation.Id = relation.Id + (uint) n;
-                        relation.GameId = game.Id;
-                        relation.GenreId = (uint?) genreId;
-                        relation.Game = game;
-                        relation.Genre = _context.Genres.First(gen => gen.Id == relation.GenreId);
-                        _context.Add(relation);
-                        await _context.SaveChangesAsync();
-                        game.Gamegenrerelations.Add(relation);
-                        _context.Update(game);
-                        await _context.SaveChangesAsync();
-                        n++;
-                    }
-
-                }
-
                 return RedirectToAction(nameof(Index));
             }
+            
             SelectList developerSelectList = new SelectList(_context.Developers, "Id", "Name");
             SelectList publisherSelectList = new SelectList(_context.Publishers, "Id", "Name");
-            SelectList ratingSelectList = new SelectList(_context.Ratings, "Age", "RatingAge");
+            SelectList genreSelectList = new SelectList(_context.Genres, "Id", "Name");
+            
             ViewBag.DeveloperName = developerSelectList;
             ViewBag.PublisherName = publisherSelectList;
+            ViewBag.GenreName = genreSelectList;
+            
             return View(game);
         }
 
@@ -148,15 +169,19 @@ namespace GameLibWeb.Controllers
             {
                 return NotFound();
             }
-
             var game = await _context.Games.FindAsync(id);
             if (game == null)
             {
                 return NotFound();
             }
-            ViewData["DeveloperId"] = new SelectList(_context.Developers, "Id", "Id", game.DeveloperId);
-            ViewData["PublisherId"] = new SelectList(_context.Publishers, "Id", "Id", game.PublisherId);
-            ViewData["RatingId"] = new SelectList(_context.Ratings, "Id", "Id", game.RatingId);
+            
+            SelectList developerSelectList = new SelectList(_context.Developers, "Id", "Name");
+            SelectList publisherSelectList = new SelectList(_context.Publishers, "Id", "Name");
+            SelectList genreSelectList = new SelectList(_context.Genres, "Id", "Name");
+            
+            ViewBag.DeveloperName = developerSelectList;
+            ViewBag.PublisherName = publisherSelectList;
+            ViewBag.GenreName = genreSelectList;
             return View(game);
         }
 
@@ -165,11 +190,91 @@ namespace GameLibWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(uint id, [Bind("Id,Name,Info,PublisherId,DeveloperId,RatingId,Media")] Game game)
+        public async Task<IActionResult> Edit(uint id, IFormFile? image, int[] selectedGenres,
+            [Bind("Id, GameId, GenreId")]Gamegenrerelation relation,
+            [Bind("Id")]Developer developer, 
+            [Bind("Id")]Publisher publisher,
+            [Bind("Id,Age")]Rating? rating,
+            [Bind("Id,Name,Info,PublisherId,DeveloperId,Media")] Game game)
         {
             if (id != game.Id)
             {
                 return NotFound();
+            }
+
+            game.Media = image != null ? ImageConverter.ToBase64(image) : ImageConverter.ToBase64("wwwroot/images/default.jpg");
+            
+            game.DeveloperId = developer.Id;
+            game.PublisherId = publisher.Id;
+
+            var gameDeveloper = _context.Developers.First(d=> d.Id == game.DeveloperId);
+            var gamePublisher = _context.Publishers.First(p=> p.Id == game.PublisherId);
+            game.Developer = gameDeveloper;
+            game.Publisher = gamePublisher;
+            
+            //Check if there isn't a rating object with this age
+            //if there isn't, add one
+            if (!_context.Ratings.Any(r => rating.Age.Equals(r.Age)))
+            {
+                _context.Add(rating);
+                await _context.SaveChangesAsync();
+                game.RatingId = rating.Id;
+                game.Rating = rating;
+            }
+            //if there is, find it
+            else
+            {
+                var foundRating = _context.Ratings.First(r=> r.Age == rating.Age);
+                game.RatingId = foundRating.Id;
+                game.Rating = foundRating;
+            }
+            
+            //Check if all relations are the same as selected
+            //if not, delete all but selected
+            //and add selected, but not added
+
+            if (_context.Games.Any(g => g.Id == game.Id))
+            {
+                try
+                {
+                    _context.Update(game);
+                    await _context.SaveChangesAsync();
+                    if (true)
+                    {
+                        _context.Gamegenrerelations.RemoveRange(_context.Gamegenrerelations.Where(ggr => ggr.Game!.Id == game.Id));
+                        foreach (var genreId in selectedGenres)
+                        {
+                            while (_context.Gamegenrerelations.Any(ggr => ggr.Id.Equals(relation.Id)))
+                            {
+                                relation.Id++;
+                            }
+
+                            relation.GameId = game.Id;
+                            relation.Game = game;
+                    
+                            relation.GenreId = (uint?) genreId;
+                            relation.Genre = _context.Genres.First(gen => gen.Id == relation.GenreId);
+                    
+                            _context.Add(relation);
+                            await _context.SaveChangesAsync();
+                            game.Gamegenrerelations?.Add(relation);
+                            _context.Update(game);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!GameExists(game.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
             }
 
             if (ModelState.IsValid)
@@ -192,9 +297,12 @@ namespace GameLibWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DeveloperId"] = new SelectList(_context.Developers, "Id", "Id", game.DeveloperId);
-            ViewData["PublisherId"] = new SelectList(_context.Publishers, "Id", "Id", game.PublisherId);
-            ViewData["RatingId"] = new SelectList(_context.Ratings, "Id", "Id", game.RatingId);
+            SelectList developerSelectList = new SelectList(_context.Developers, "Id", "Name");
+            SelectList publisherSelectList = new SelectList(_context.Publishers, "Id", "Name");
+            SelectList genreSelectList = new SelectList(_context.Genres, "Id", "Name");
+            ViewBag.DeveloperName = developerSelectList;
+            ViewBag.PublisherName = publisherSelectList;
+            ViewBag.GenreName = genreSelectList;
             return View(game);
         }
 

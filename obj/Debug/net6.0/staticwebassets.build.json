@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "OJHLS0tQgwq3bDMEwiQ90RG18shqTOsmwRtwyeN78Bo=",
+  "Hash": "UiAAGtVA3SqLluNRkuuYgHlnBePM4UvrK3/2/JJ2u6Q=",
   "Source": "GameLibWeb",
   "BasePath": "_content/GameLibWeb",
   "Mode": "Default",
@@ -83,6 +83,40 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "D:\\JB\\Rider\\GameLibWeb\\wwwroot\\images\\default.jpg",
+      "SourceId": "GameLibWeb",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\JB\\Rider\\GameLibWeb\\wwwroot\\",
+      "BasePath": "_content/GameLibWeb",
+      "RelativePath": "images/default.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\default.jpg"
+    },
+    {
+      "Identity": "D:\\JB\\Rider\\GameLibWeb\\wwwroot\\images\\default1.jpg",
+      "SourceId": "GameLibWeb",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\JB\\Rider\\GameLibWeb\\wwwroot\\",
+      "BasePath": "_content/GameLibWeb",
+      "RelativePath": "images/default1.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\default1.jpg"
     },
     {
       "Identity": "D:\\JB\\Rider\\GameLibWeb\\wwwroot\\js\\site.js",

@@ -56,9 +56,16 @@ namespace GameLibWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(IFormFile image ,[Bind("Id,Name,Info,Media")] Developer developer)
+        public async Task<IActionResult> Create(IFormFile? image ,[Bind("Id,Name,Info,Media")] Developer developer)
         {
-            developer.Media = ImageConverter.ToBase64(image);
+            if (image != null)
+            {
+                developer.Media = ImageConverter.ToBase64(image);
+            }
+            else
+            {
+                developer.Media = ImageConverter.ToBase64("wwwroot/images/default.jpg");
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(developer);
@@ -89,11 +96,20 @@ namespace GameLibWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(uint id, [Bind("Id,Name,Info,Media")] Developer developer)
+        public async Task<IActionResult> Edit(uint id, IFormFile? image, [Bind("Id,Name,Info")] Developer developer)
         {
             if (id != developer.Id)
             {
                 return NotFound();
+            }
+
+            if (image != null)
+            {
+                developer.Media = ImageConverter.ToBase64(image);
+            }
+            else
+            {
+                developer.Media = ImageConverter.ToBase64("wwwroot/images/default.jpg");
             }
 
             if (ModelState.IsValid)

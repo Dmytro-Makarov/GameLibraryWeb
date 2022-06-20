@@ -121,4 +121,8 @@
       <UpToDateCheckInput Remove="Views\Publisher\Index.cshtml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\images" />
+    </ItemGroup>
+
 </Project>
