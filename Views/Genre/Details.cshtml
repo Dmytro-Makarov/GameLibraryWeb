@@ -6,8 +6,12 @@
 
 <h1>Details</h1>
 
+@{
+    string genreName = Model.Name;
+}
+
 <div>
-    <h4>Genre</h4>
+    <h4>@genreName.ToUpper()</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">

@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using GameLibWeb;
 
 namespace GameLibWeb.Controllers
 {
@@ -42,7 +36,18 @@ namespace GameLibWeb.Controllers
                 return NotFound();
             }
 
-            return View(genre);
+            //List<Game> gameList = new List<Game>();
+            //List<Gamegenrerelation> relations = new List<Gamegenrerelation>();
+            //relations.AddRange(_context.Gamegenrerelations.Where(ggr => ggr.GenreId == genre.Id));
+            
+            //foreach (var relation in relations)
+            //{
+            //    gameList.Add(relation.Game!);
+            //}
+
+            //ViewBag.Games = gameList;
+            //return View(genre);
+            return RedirectToAction("Index", "Game", new {id = genre.Id, routeType = 3});
         }
 
         // GET: Genre/Create
@@ -148,6 +153,12 @@ namespace GameLibWeb.Controllers
             var genre = await _context.Genres.FindAsync(id);
             if (genre != null)
             {
+                //delete all relations with this genre
+                _context.RemoveRange(_context.Gamegenrerelations.Where(ggr => ggr.GenreId == genre.Id));
+                await _context.SaveChangesAsync();
+                //if some games are left with no relations, delete them
+                _context.RemoveRange(_context.Games.Where(g => g.Gamegenrerelations.Count == 0));
+                await _context.SaveChangesAsync();
                 _context.Genres.Remove(genre);
             }
             

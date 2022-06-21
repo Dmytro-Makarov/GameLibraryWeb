@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using GameLibWeb;
 
 namespace GameLibWeb.Controllers
 {
@@ -42,7 +36,12 @@ namespace GameLibWeb.Controllers
                 return NotFound();
             }
 
-            return View(publisher);
+            //List<Game> gameList = new List<Game>();
+            //gameList.AddRange(_context.Games.Where(g => g.PublisherId == publisher.Id));
+
+            //ViewBag.Games = gameList;
+            //return View(publisher);
+            return RedirectToAction("Index", "Game", new {id = publisher.Id, routeType = 2});
         }
 
         // GET: Publisher/Create
@@ -58,14 +57,7 @@ namespace GameLibWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(IFormFile? image ,[Bind("Id,Name,Info,Media")] Publisher publisher)
         {
-            if (image != null)
-            {
-                publisher.Media = ImageConverter.ToBase64(image);
-            }
-            else
-            {
-                publisher.Media = ImageConverter.ToBase64("wwwroot/images/default.jpg");
-            }
+            publisher.Media = image != null ? ImageConverter.ToBase64(image) : ImageConverter.ToBase64("wwwroot/images/default.jpg");
             if (ModelState.IsValid)
             {
                 _context.Add(publisher);
@@ -103,14 +95,7 @@ namespace GameLibWeb.Controllers
                 return NotFound();
             }
 
-            if (image != null)
-            {
-                publisher.Media = ImageConverter.ToBase64(image);
-            }
-            else
-            {
-                publisher.Media = ImageConverter.ToBase64("wwwroot/images/default.jpg");
-            }
+            publisher.Media = image != null ? ImageConverter.ToBase64(image) : ImageConverter.ToBase64("wwwroot/images/default.jpg");
             
             if (ModelState.IsValid)
             {
@@ -165,6 +150,19 @@ namespace GameLibWeb.Controllers
             var publisher = await _context.Publishers.FindAsync(id);
             if (publisher != null)
             {
+                //games from this developer
+                var pubGames = _context.Games.Where(g => g.PublisherId == publisher.Id).ToList();
+                foreach (var game in pubGames)
+                {
+                    //delete relations from each game
+                    _context.RemoveRange(_context.Gamegenrerelations.Where(ggr => ggr.GameId == game.Id));
+                }
+                await _context.SaveChangesAsync();
+
+                //delete the games
+                _context.RemoveRange(pubGames);
+                await _context.SaveChangesAsync();
+                
                 _context.Publishers.Remove(publisher);
             }
             

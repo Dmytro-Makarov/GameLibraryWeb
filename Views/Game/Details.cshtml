@@ -1,7 +1,7 @@
 @model GameLibWeb.Game
 
 @{
-    ViewData["Title"] = "Details";
+    ViewBag.Title = "Create";
 }
 
 <h1>Details</h1>
@@ -10,41 +10,57 @@
     <h4>Game</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Info)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Info)
-        </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Media)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Media)
+        <dd class="col-sm-10">
+            @{
+                string icon = string.Format("data:image/png;base64,{0}", Model.Media);
+                ViewBag.ImageData = icon;
+            }
+            <img src="@icon" width="150" height="150"/>
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Developer)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Developer.Id)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Publisher)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Info)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Publisher.Id)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Info)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Rating)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Rating.Id)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Rating.Age)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Developer)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Developer.Name)
+        </dd>        
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Developer.Info)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Developer.Info)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Publisher)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Publisher.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Publisher.Info)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Publisher.Info)
         </dd>
     </dl>
 </div>

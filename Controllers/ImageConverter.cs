@@ -8,17 +8,15 @@ public static class ImageConverter
     {
         byte[] bytes = Convert.FromBase64String(base64);
         Image image;
-        using (MemoryStream ms = new MemoryStream(bytes))
-        {
-            image = Image.FromStream(ms);
-        }
+        using MemoryStream ms = new MemoryStream(bytes);
+        image = Image.FromStream(ms);
         return image;
     }
 
     public static string ToBase64(IFormFile? image)
     {
         using MemoryStream ms = new MemoryStream();
-        image.CopyTo(ms);
+        image!.CopyTo(ms);
         byte[] imageBytes = ms.ToArray();
 
         string base64String = Convert.ToBase64String(imageBytes);

@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using GameLibWeb;
-using Microsoft.Data.SqlClient.Server;
 
 namespace GameLibWeb.Controllers
 {
@@ -20,16 +14,51 @@ namespace GameLibWeb.Controllers
         }
 
         // GET: Game
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id, int? routeType)
         {
-            //Made Index based on GameGenreRelations to get access to Genres
-            var dbgamelibContext = _context.Gamegenrerelations.
-                Include(ggr => ggr.Game).
-                Include(ggr => ggr.Genre).
-                Include(ggr => ggr.Game!.Developer).
-                Include(ggr=>ggr.Game!.Publisher).
-                Include(ggr=>ggr.Game!.Publisher);
-                
+            if (id == null)
+            {
+                switch (routeType)
+                {
+                    case 1:
+                        return RedirectToAction("Index", "Developer");
+                    case 2:
+                        return RedirectToAction("Index", "Publisher");
+                    case 3:
+                        return RedirectToAction("Index", "Genre");
+                }
+            }
+            
+            IQueryable<Game> db = null! ;
+            switch (routeType)
+            {
+                case 1:
+                    db = _context.Games.Where(g => g.DeveloperId == id);
+                    break;
+                case 2:
+                    db = _context.Games.Where(g => g.PublisherId == id);
+                    break;
+                case 3:
+                    var relations = _context.Gamegenrerelations.Where(ggr => ggr.GenreId == id).ToArray();
+                    //Define an empty IQueryable
+                    db = _context.Games.Where(g => false);
+                    foreach (var relation in relations)
+                    {
+                      db = db.Concat(_context.Games.Where(g => g.Id == relation.GameId));
+                    }
+                    break;
+                default:
+                    db = _context.Games;
+                    break;
+            }
+
+            var dbgamelibContext = db.
+                Include(g => g.Developer).
+                Include(g => g.Publisher).
+                Include(g => g.Rating);
+            List<Gamegenrerelation> gamegenrerelations = new List<Gamegenrerelation>();
+            gamegenrerelations.AddRange(_context.Gamegenrerelations.Include(ggr => ggr.Genre));
+            ViewBag.Relations = gamegenrerelations;
             return View(await dbgamelibContext.ToListAsync());
         }
 
@@ -81,14 +110,7 @@ namespace GameLibWeb.Controllers
             [Bind("Id,Name,Info,PublisherId,DeveloperId,Media")] Game game)
         {
             //Convert image to Base64
-            if (image != null)
-            {
-                game.Media = ImageConverter.ToBase64(image);
-            }
-            else
-            {
-                game.Media = ImageConverter.ToBase64("wwwroot/images/default.jpg");
-            }
+            game.Media = image != null ? ImageConverter.ToBase64(image) : ImageConverter.ToBase64("wwwroot/images/default.jpg");
             
             game.DeveloperId = developer.Id;
             game.PublisherId = publisher.Id;
@@ -100,12 +122,12 @@ namespace GameLibWeb.Controllers
             
             //Check if there isn't a rating object with this age
             //if there isn't, add one
-            //TODO: Rating requires to add a game relation
+            //Warning: Validation is probably skipped, not like i care
             if (!_context.Ratings.Any(r => rating!.Age.Equals(r.Age)))
             {
                 _context.Add(rating);
                 await _context.SaveChangesAsync();
-                game.RatingId = rating.Id;
+                game.RatingId = rating?.Id;
                 game.Rating = rating;
             }
             //if there is, find it
@@ -214,17 +236,17 @@ namespace GameLibWeb.Controllers
             
             //Check if there isn't a rating object with this age
             //if there isn't, add one
-            if (!_context.Ratings.Any(r => rating.Age.Equals(r.Age)))
+            if (!_context.Ratings.Any(r => rating!.Age.Equals(r.Age)))
             {
                 _context.Add(rating);
                 await _context.SaveChangesAsync();
-                game.RatingId = rating.Id;
+                game.RatingId = rating!.Id;
                 game.Rating = rating;
             }
             //if there is, find it
             else
             {
-                var foundRating = _context.Ratings.First(r=> r.Age == rating.Age);
+                var foundRating = _context.Ratings.First(r=> r.Age == rating!.Age);
                 game.RatingId = foundRating.Id;
                 game.Rating = foundRating;
             }
@@ -339,6 +361,9 @@ namespace GameLibWeb.Controllers
             var game = await _context.Games.FindAsync(id);
             if (game != null)
             {
+                //delete all relations with this game
+                _context.RemoveRange(_context.Gamegenrerelations.Where(ggr => ggr.GameId == game.Id));
+                await _context.SaveChangesAsync();
                 _context.Games.Remove(game);
             }
             

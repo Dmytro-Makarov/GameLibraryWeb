@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace GameLibWeb
 {
     public partial class Publisher
     {
         public uint Id { get; set; }
+        [Required(ErrorMessage = "Publisher name required!")]
+        [MaxLength(50)]
         [Display(Name = "Publisher Name")]
         public string Name { get; set; } = null!;
+        [MaxLength(100)]
         [Display(Name = "Publisher Info")]
         public string? Info { get; set; }
         [Display(Name = "Publisher Icon")]

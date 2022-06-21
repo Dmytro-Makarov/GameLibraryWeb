@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using GameLibWeb;
 
 namespace GameLibWeb.Controllers
 {
@@ -42,7 +36,13 @@ namespace GameLibWeb.Controllers
                 return NotFound();
             }
 
-            return View(developer);
+            //List<Game> gameList = new List<Game>();
+            //gameList.AddRange(_context.Games.Where(g => g.PublisherId == developer.Id));
+
+            //ViewBag.Games = gameList;
+            
+            //return View(developer);
+            return RedirectToAction("Index", "Game", new {id = developer.Id, routeType = 1});
         }
 
         // GET: Developer/Create
@@ -58,14 +58,7 @@ namespace GameLibWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(IFormFile? image ,[Bind("Id,Name,Info,Media")] Developer developer)
         {
-            if (image != null)
-            {
-                developer.Media = ImageConverter.ToBase64(image);
-            }
-            else
-            {
-                developer.Media = ImageConverter.ToBase64("wwwroot/images/default.jpg");
-            }
+            developer.Media = image != null ? ImageConverter.ToBase64(image) : ImageConverter.ToBase64("wwwroot/images/default.jpg");
             if (ModelState.IsValid)
             {
                 _context.Add(developer);
@@ -103,14 +96,7 @@ namespace GameLibWeb.Controllers
                 return NotFound();
             }
 
-            if (image != null)
-            {
-                developer.Media = ImageConverter.ToBase64(image);
-            }
-            else
-            {
-                developer.Media = ImageConverter.ToBase64("wwwroot/images/default.jpg");
-            }
+            developer.Media = image != null ? ImageConverter.ToBase64(image) : ImageConverter.ToBase64("wwwroot/images/default.jpg");
 
             if (ModelState.IsValid)
             {
@@ -165,6 +151,19 @@ namespace GameLibWeb.Controllers
             var developer = await _context.Developers.FindAsync(id);
             if (developer != null)
             {
+                //games from this developer
+                var devGames = _context.Games.Where(g => g.DeveloperId == developer.Id).ToList();
+                foreach (var game in devGames)
+                {
+                    //delete relations from each game
+                    _context.RemoveRange(_context.Gamegenrerelations.Where(ggr => ggr.GameId == game.Id));
+                }
+                await _context.SaveChangesAsync();
+                
+                //delete the games
+                _context.RemoveRange(devGames);
+                await _context.SaveChangesAsync();
+                
                 _context.Developers.Remove(developer);
             }
             
