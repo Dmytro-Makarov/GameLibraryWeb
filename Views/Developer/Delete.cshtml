@@ -11,6 +11,16 @@
     <h4>Developer</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Media)
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                string icon = string.Format("data:image/png;base64,{0}", Model.Media);
+                ViewBag.ImageData = icon;
+            }
+            <img src="@icon" width="150" height="150"/>
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
@@ -22,12 +32,6 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Info)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Media)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Media)
         </dd>
     </dl>
     
